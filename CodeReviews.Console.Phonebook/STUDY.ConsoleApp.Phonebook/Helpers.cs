@@ -4,26 +4,22 @@ namespace STUDY.ConsoleApp.Phonebook;
 
 public static class Helpers
 {
-    public static List<string> SeparateString(this List<string> input)
+    public static string SeparateString(this string input)
     {
-        var output = new List<string>();
-        StringBuilder builder = new StringBuilder();
-        
-        foreach (var item in input)
+        StringBuilder output = new StringBuilder();
+
+        foreach (var c in input)
         {
-            foreach (var c in item)
+            var character = c;
+            if (char.IsUpper(character) && output.Length > 1)
             {
-                var character = c;
-                if (char.IsUpper(character) && builder.Length > 1)
-                {
-                    builder.Append(' ');
-                    character = char.ToLower(c);
-                }
-                builder.Append(character);
+                output.Append(' ');
+                character = char.ToLower(c);
             }
-            output.Add(builder.ToString());
-            builder.Clear();
+
+            output.Append(character);
         }
-        return output;
+        
+        return output.ToString();
     }
 }
