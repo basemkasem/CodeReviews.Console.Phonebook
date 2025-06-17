@@ -14,7 +14,7 @@ public static class ContactController
     public static Contact GetContactById(int id)
     {
         using var context = new PhonebookContext();
-        var contact = context.Contacts.Single(x => x.Id == id);
+        var contact = context.Contacts.Single(x => x.ContactId == id);
         return contact;
     }
 

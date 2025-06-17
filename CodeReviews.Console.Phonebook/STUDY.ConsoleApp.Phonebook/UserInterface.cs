@@ -27,12 +27,49 @@ public static class UserInterface
                 case MainMenuOptions.ManageContacts:
                     ContactsMenu();
                     break;
+                case MainMenuOptions.ManageCategories:
+                    CategoriesMenu();
+                    break;
                 case MainMenuOptions.Exit:
                     isRunning = false;
                     break;
             }
         }
         Console.WriteLine("Goodbye!");
+    }
+
+    private static void CategoriesMenu()
+    {
+        var options = Enum.GetValues<CategoryMenuOptions>();
+        
+        bool isRunning = true;
+        while (isRunning)
+        {
+            var option = AnsiConsole.Prompt(new SelectionPrompt<CategoryMenuOptions>()
+                .AddChoices(options)
+                .UseConverter(option => option.ToString().SeparateString())
+                .Title("Choose an option:"));
+
+            switch (option)
+            {
+                case CategoryMenuOptions.AddACategory:
+                    CategoryService.AddCategory();
+                    break;
+                case CategoryMenuOptions.ListAllCategories:
+                    CategoryService.ListAllCategories();
+                    break;
+                case CategoryMenuOptions.UpdateACategory:
+                    CategoryService.UpdateCategory();
+                    break;
+                case CategoryMenuOptions.DeleteACategory:
+                    CategoryService.DeleteCategory();
+                    break;
+                case CategoryMenuOptions.GoBack:
+                    isRunning = false;
+                    break;
+            }
+            Console.Clear();
+        }
     }
 
     private static void ContactsMenu()
@@ -82,8 +119,22 @@ public static class UserInterface
 
         foreach (var contact in contacts)
         {
-            table.AddRow(contact.Id.ToString(), contact.Name, contact.Email, contact.PhoneNumber);
+            table.AddRow(contact.ContactId.ToString(), contact.Name, contact.Email, contact.PhoneNumber);
         }
+        
+        AnsiConsole.Write(table);
+        Console.WriteLine("Press any key to continue...");
+        Console.ReadLine();
+    }
+    
+    public static void ShowCategoriesTable(List<Category> categories)
+    {
+        var table = new Table();
+        table.AddColumn("Id");
+        table.AddColumn("Name");
+        
+        foreach (var category in categories)
+            table.AddRow(category.CategoryId.ToString(), category.Name);
         
         AnsiConsole.Write(table);
         Console.WriteLine("Press any key to continue...");
@@ -92,7 +143,7 @@ public static class UserInterface
 
     public static void ShowContactPanel(Contact contact)
     {
-        var panel = new Panel($"Id: {contact.Id}\nName: {contact.Name}\nEmail: {contact.Email}\nPhone number: {contact.PhoneNumber}")
+        var panel = new Panel($"Id: {contact.ContactId}\nName: {contact.Name}\nEmail: {contact.Email}\nPhone number: {contact.PhoneNumber}")
         {
             Header = new PanelHeader("Contact Details"),
             Padding = new Padding(3, 1, 3, 1),
