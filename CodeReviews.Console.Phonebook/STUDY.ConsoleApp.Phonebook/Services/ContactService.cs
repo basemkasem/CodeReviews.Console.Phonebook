@@ -23,18 +23,29 @@ public static class ContactService
             PhoneNumber = AnsiConsole.Prompt(
                 new TextPrompt<string>("""
 
-                                       [Yellow]Notice: Number must be between 10 and 15 digits.[/] 
-                                       These formats are supported: 
-                                       - 1234567890 (10 digits) 
-                                       - +1234567890 (with country code) 
-                                       - 123456789012345 (15 digits) 
+                                       Please enter your phone number in one of the valid formats below:
+                                       [yellow]
+                                       > 01012345678
+                                       > 011-12345678
+                                       > +201012345678
+                                       > +20 100 123 4567
+                                       > +44 20 7946 0958
+                                       > +1 123-456-7890
+                                       > +971 50 123 4567
+                                       > +912345678900[/]
 
-                                       [cyan]Enter the new contact's phone number:[/] 
+                                       [cyan]Enter your phone number:[/]
                                        """)
-                    .Validate(x => x == Regex.Match(x, @"^\+?\d{10,15}$").Value, "[red]Invalid phone number.[/]")
+                    .Validate(x => x == Regex.Match(x, @"^(?:(?:\+|00)[1-9]\d{0,2}[-\s]?)?(?:\(?\d{2,4}\)?[-\s]?)?\d{6,10}$").Value, "[red]Invalid phone number! Please try again.[/]")
             )
         };
-        ContactController.AddContact(contact);
+        
+        var categories = AnsiConsole.Confirm("Do you want to add your contact to one or more categories?") 
+            ? CategoryService.GetMultipleCategoriesInput() 
+            : null;
+
+        ContactController.AddContact(contact, categories);
+
         AnsiConsole.MarkupLine("[green]Contact added successfully![/]");
         Console.WriteLine("Press any key to continue...");
         Console.ReadLine();
@@ -46,9 +57,16 @@ public static class ContactService
         UserInterface.ShowContactsTable(contacts);
     }
 
-    public static Contact GetContactOptionInput()
+    private static Contact? GetContactOptionInput()
     {
         var contacts = ContactController.ListAllContacts();
+        if (contacts.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]No contacts found.[/]");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadLine();
+            return null;
+        }
         var contactsNames = contacts.Select(x => x.Name);
 
         var selectedOption = AnsiConsole.Prompt(new SelectionPrompt<string>()
@@ -62,6 +80,8 @@ public static class ContactService
     public static void GetContact()
     {
         var contact = GetContactOptionInput();
+        if (contact == null) return;
+        
         UserInterface.ShowContactPanel(contact);
         Console.WriteLine("Press any key to continue...");
         Console.ReadLine();
@@ -70,6 +90,8 @@ public static class ContactService
     public static void UpdateContact()
     {
         var contact = GetContactOptionInput();
+        if (contact == null) return;
+        
         UserInterface.ShowContactPanel(contact);
         contact.Name = AnsiConsole.Confirm("Do you want to update the contact's name?")
             ? AnsiConsole.Prompt(
@@ -85,18 +107,27 @@ public static class ContactService
         contact.PhoneNumber = AnsiConsole.Confirm("Do you want to update the contact's phone number?")
             ? AnsiConsole.Prompt(
                 new TextPrompt<string>("""
-
-                                       [Yellow]Notice: Number must be between 10 and 15 digits.[/] 
-                                       These formats are supported: 
-                                       - 1234567890 (10 digits) 
-                                       - +1234567890 (with country code) 
-                                       - 123456789012345 (15 digits) 
+                                       Please enter your phone number in one of the valid formats below:
+                                       [yellow]
+                                       > 01012345678
+                                       > 011-12345678
+                                       > +201012345678
+                                       > +20 100 123 4567
+                                       > +44 20 7946 0958
+                                       > +1 123-456-7890
+                                       > +971 50 123 4567
+                                       > +912345678900[/]
 
                                        [cyan]Enter the new contact's phone number:[/] 
                                        """)
-                    .Validate(x => x == Regex.Match(x, @"^\+?\d{10,15}$").Value, "[red]Invalid phone number.[/]"))
+                    .Validate(x => x == Regex.Match(x, @"^(?:(?:\+|00)[1-9]\d{0,2}[-\s]?)?(?:\(?\d{2,4}\)?[-\s]?)?\d{6,10}$").Value, "[red]Invalid phone number! Please try again.[/]"))
             : contact.PhoneNumber;
-        ContactController.UpdateContact(contact);
+        
+        var categories = AnsiConsole.Confirm("Do you want to update contact categories?") 
+            ? CategoryService.GetMultipleCategoriesInput() 
+            : null;
+        
+        ContactController.UpdateContact(contact, categories);
         AnsiConsole.MarkupLine("[green]Contact updated successfully![/]");
         Console.WriteLine("Press any key to continue...");
         Console.ReadLine();
@@ -105,6 +136,8 @@ public static class ContactService
     public static void DeleteContact()
     {
         var contact = GetContactOptionInput();
+        if (contact == null) return;
+        
         ContactController.DeleteContact(contact);
         AnsiConsole.MarkupLine("[green]Contact deleted successfully![/]");
         Console.WriteLine("Press any key to continue...");

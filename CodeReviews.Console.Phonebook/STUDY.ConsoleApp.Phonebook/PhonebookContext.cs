@@ -7,6 +7,7 @@ public class PhonebookContext : DbContext
 {
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<ContactCategory> ContactCategories { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder.UseSqlServer("Server=(localdb)\\MyLocalDB;Database=Phonebook;Trusted_Connection=True;");
@@ -43,7 +44,10 @@ public class PhonebookContext : DbContext
             .Property(c => c.Email)
             .IsRequired()
             .HasMaxLength(50);
-
+        
+        builder.Entity<Category>()
+            .HasIndex(c => c.Name)
+            .IsUnique();
 
         builder.Entity<Category>()
             .HasData(

@@ -2,8 +2,8 @@
 
 using STUDY.ConsoleApp.Phonebook;
 
-// PhonebookContext context = new();
-// context.Database.EnsureDeleted();
-// context.Database.EnsureCreated();
+PhonebookContext context = new();
+context.Database.EnsureDeleted();
+context.Database.EnsureCreated();
 
 UserInterface.MainMenu();

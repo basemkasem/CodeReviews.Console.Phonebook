@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using Microsoft.IdentityModel.Tokens;
+using Spectre.Console;
 using STUDY.ConsoleApp.Phonebook.Models;
 using STUDY.ConsoleApp.Phonebook.Services;
 
@@ -116,10 +117,14 @@ public static class UserInterface
         table.AddColumn("Name");
         table.AddColumn("Email");
         table.AddColumn("Phone Number");
-
+        table.AddColumn("Categories");
+        
         foreach (var contact in contacts)
         {
-            table.AddRow(contact.ContactId.ToString(), contact.Name, contact.Email, contact.PhoneNumber);
+            var categories = string.Join(", ", contact.Categories!) ?? "";
+
+            table.AddRow(contact.ContactId.ToString(), contact.Name, contact.Email, contact.PhoneNumber, categories); 
+            
         }
         
         AnsiConsole.Write(table);
@@ -143,7 +148,9 @@ public static class UserInterface
 
     public static void ShowContactPanel(Contact contact)
     {
-        var panel = new Panel($"Id: {contact.ContactId}\nName: {contact.Name}\nEmail: {contact.Email}\nPhone number: {contact.PhoneNumber}")
+        var categories = contact.Categories.IsNullOrEmpty() ? "[yellow]No categories[/]" : string.Join(", ", contact.Categories!) ;
+        
+        var panel = new Panel($"Id: {contact.ContactId}\nName: {contact.Name}\nEmail: {contact.Email}\nPhone number: {contact.PhoneNumber} \nCategories: {categories}")
         {
             Header = new PanelHeader("Contact Details"),
             Padding = new Padding(3, 1, 3, 1),

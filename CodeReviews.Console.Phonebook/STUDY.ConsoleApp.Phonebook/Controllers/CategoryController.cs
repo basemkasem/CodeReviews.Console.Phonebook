@@ -2,13 +2,18 @@
 
 namespace STUDY.ConsoleApp.Phonebook.Controllers;
 
-public class CategoryController
+public static class CategoryController
 {
-    public static void AddCategory(Category category)
+    public static bool AddCategory(Category category)
     {
         using var context = new PhonebookContext();
+        
+        if (context.Categories.Any(x => x.Name == category.Name))
+            return false;
+        
         context.Add(category);
         context.SaveChanges();
+        return true;
     }
     
     public static List<Category> ListAllCategories()

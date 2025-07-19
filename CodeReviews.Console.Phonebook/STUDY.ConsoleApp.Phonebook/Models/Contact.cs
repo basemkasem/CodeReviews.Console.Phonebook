@@ -1,4 +1,6 @@
-﻿namespace STUDY.ConsoleApp.Phonebook.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace STUDY.ConsoleApp.Phonebook.Models;
 
 public class Contact
 {
@@ -11,4 +13,7 @@ public class Contact
     public required string PhoneNumber { get; set; }
     
     public ICollection<ContactCategory> ContactCategories { get; set; }
+    
+    [NotMapped]
+    public List<string>? Categories { get; set; }
 }
