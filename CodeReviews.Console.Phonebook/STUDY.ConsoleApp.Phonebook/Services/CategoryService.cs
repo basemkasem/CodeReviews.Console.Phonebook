@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using Microsoft.IdentityModel.Tokens;
+using Spectre.Console;
 using STUDY.ConsoleApp.Phonebook.Controllers;
 using STUDY.ConsoleApp.Phonebook.Models;
 
@@ -23,13 +24,21 @@ public static class CategoryService
     public static void ListAllCategories()
     {
         var categories = CategoryController.ListAllCategories();
+        if (categories.IsNullOrEmpty())
+        {
+            AnsiConsole.MarkupLine("[red]No categories found.[/]");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadLine();
+            return;
+        }
+        
         UserInterface.ShowCategoriesTable(categories);
     }
 
     private static Category? GetCategoryOptionInput()
     {
         var categories = CategoryController.ListAllCategories();
-        if (categories.Count == 0)
+        if (categories.IsNullOrEmpty())
         {
             AnsiConsole.MarkupLine("[red]No categories found.[/]");
             Console.WriteLine("Press any key to continue...");
@@ -50,7 +59,7 @@ public static class CategoryService
     public static List<Category>? GetMultipleCategoriesInput()
     {
         var categories = CategoryController.ListAllCategories();
-        if (categories.Count == 0)
+        if (categories.IsNullOrEmpty())
             return null;
 
         var categoriesNames = categories.Select(x => x.Name);
@@ -85,5 +94,20 @@ public static class CategoryService
         AnsiConsole.MarkupLine("[green]Category deleted successfully![/]");
         Console.WriteLine("Press any key to continue...");
         Console.ReadLine();
+    }
+
+    public static void GetContactsByCategory()
+    {
+        var category = GetCategoryOptionInput();
+        if (category == null) return;
+        var contacts = ContactController.GetContactsByCategory(category);
+        if (contacts.IsNullOrEmpty())
+        {
+            AnsiConsole.MarkupLine("[red]No contacts Under this category.[/]");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadLine();
+            return;
+        }
+        UserInterface.ShowContactsUnderCategoryTable(contacts!);
     }
 }

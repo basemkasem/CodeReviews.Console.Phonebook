@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.IdentityModel.Tokens;
 using Spectre.Console;
 using STUDY.ConsoleApp.Phonebook.Controllers;
 using STUDY.ConsoleApp.Phonebook.Models;
@@ -54,13 +55,20 @@ public static class ContactService
     public static void ListAllContacts()
     {
         var contacts = ContactController.ListAllContacts();
+        if (contacts.IsNullOrEmpty())
+        {
+            AnsiConsole.MarkupLine("[red]No contacts found.[/]");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadLine();
+            return;
+        }
         UserInterface.ShowContactsTable(contacts);
     }
 
     private static Contact? GetContactOptionInput()
     {
         var contacts = ContactController.ListAllContacts();
-        if (contacts.Count == 0)
+        if (contacts.IsNullOrEmpty())
         {
             AnsiConsole.MarkupLine("[red]No contacts found.[/]");
             Console.WriteLine("Press any key to continue...");
@@ -137,9 +145,13 @@ public static class ContactService
     {
         var contact = GetContactOptionInput();
         if (contact == null) return;
-        
-        ContactController.DeleteContact(contact);
-        AnsiConsole.MarkupLine("[green]Contact deleted successfully![/]");
+
+        if (AnsiConsole.Confirm("[red]Are you sure you want to delete the contact?[/]"))
+        {
+            ContactController.DeleteContact(contact);
+            AnsiConsole.MarkupLine("[green]Contact deleted successfully![/]");
+        }
+
         Console.WriteLine("Press any key to continue...");
         Console.ReadLine();
     }

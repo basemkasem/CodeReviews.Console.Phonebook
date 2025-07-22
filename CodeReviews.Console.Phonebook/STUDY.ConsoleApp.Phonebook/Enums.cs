@@ -20,6 +20,7 @@ public enum ContactMenuOptions
 public enum CategoryMenuOptions
 {
     AddACategory,
+    GetContactsUnderACategory,
     ListAllCategories,
     UpdateACategory,
     DeleteACategory,

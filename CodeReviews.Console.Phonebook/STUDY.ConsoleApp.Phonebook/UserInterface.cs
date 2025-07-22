@@ -36,7 +36,7 @@ public static class UserInterface
                     break;
             }
         }
-        Console.WriteLine("Goodbye!");
+        Console.WriteLine("Good bye!");
     }
 
     private static void CategoriesMenu()
@@ -55,6 +55,9 @@ public static class UserInterface
             {
                 case CategoryMenuOptions.AddACategory:
                     CategoryService.AddCategory();
+                    break;
+                case CategoryMenuOptions.GetContactsUnderACategory:
+                    CategoryService.GetContactsByCategory();
                     break;
                 case CategoryMenuOptions.ListAllCategories:
                     CategoryService.ListAllCategories();
@@ -125,6 +128,24 @@ public static class UserInterface
 
             table.AddRow(contact.ContactId.ToString(), contact.Name, contact.Email, contact.PhoneNumber, categories); 
             
+        }
+        
+        AnsiConsole.Write(table);
+        Console.WriteLine("Press any key to continue...");
+        Console.ReadLine();
+    }
+    
+    public static void ShowContactsUnderCategoryTable(List<Contact> contacts)
+    {
+        var table = new Table();
+        table.AddColumn("Id");
+        table.AddColumn("Name");
+        table.AddColumn("Email");
+        table.AddColumn("Phone Number");
+        
+        foreach (var contact in contacts)
+        {
+            table.AddRow(contact.ContactId.ToString(), contact.Name, contact.Email, contact.PhoneNumber); 
         }
         
         AnsiConsole.Write(table);

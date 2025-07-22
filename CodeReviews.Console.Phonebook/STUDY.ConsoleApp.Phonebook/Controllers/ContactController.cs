@@ -66,6 +66,17 @@ public static class ContactController
         return contacts;
     }
 
+    public static List<Contact>? GetContactsByCategory(Category category)
+    {
+        using var context =  new PhonebookContext();
+        var contacts = context.Contacts
+            .Include(c => c.ContactCategories)
+            .Where(c => c.ContactCategories.Any(cc => cc.CategoryId == category.CategoryId))
+            .ToList();
+
+        return contacts;
+    }
+
     public static void UpdateContact(Contact contact, List<Category>? categories = null)
     {
         using var context = new PhonebookContext();
