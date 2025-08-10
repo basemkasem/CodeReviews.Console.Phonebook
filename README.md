@@ -9,7 +9,7 @@ The Phonebook Console App enables users to create, view, and manage Contacts and
 
 - **Manage Contacts**: Create, view, update, and delete Contacts
 - **Manage Categories**: Add, edit, and remove Categories of the contacts
-- **Relationship between Contacts and Categories**: Add a contact to one or more categories
+- **Relationship between Contacts and Categories**: Add a contact to one or more categories, and filter contacts by a certain category
   
 ## 🛠️ Technologies Used
 
