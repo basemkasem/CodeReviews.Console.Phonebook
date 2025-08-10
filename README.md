@@ -1,6 +1,7 @@
 # Phonebook Console App
 
 This is a simple console-based flashcards application developed as part of The C# Academy's learning projects. It serves as a practical exercise to reinforce fundamental C# programming concepts.
+
 ## Overview
 
 The Phonebook Console App enables users to create, view, and manage Contacts and Categories directly from the command line, featuring an interactive and visually appealing UI.
